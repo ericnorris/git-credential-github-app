@@ -1,0 +1,26 @@
+version: 2
+
+builds:
+  - id:     git-credential-github-app
+    binary: git-credential-github-app
+    main:   ./cmd/git-credential-github-app
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+  - id:     git-credential-github-app-gcpkms
+    binary: git-credential-github-app-gcpkms
+    main: ./cmd/git-credential-github-app-gcpkms
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - formats:
+      - binary
