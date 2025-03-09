@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -44,6 +45,7 @@ func (h *AppCredentialHelper) Get(in []CredentialAttribute) ([]CredentialAttribu
 	return []CredentialAttribute{
 		{"username", "x-access-token"},
 		{"password", tokenResponse.Token},
+		{"password_expiry_utc", strconv.FormatInt(tokenResponse.ExpiresAt.Unix(), 10)},
 	}, nil
 }
 
