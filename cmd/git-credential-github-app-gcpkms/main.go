@@ -1,16 +1,17 @@
 package main
 
 import (
-	"crypto/x509"
-	"encoding/pem"
+	"context"
 	"os"
 
 	"github.com/alecthomas/kong"
+
 	"github.com/ericnorris/git-credential-github-app/internal"
+	"github.com/ericnorris/git-credential-github-app/internal/gcpkms"
 )
 
 var args struct {
-	PrivateKey     string `name:"private-key" help:"Path to the private key." type:"path" required:""`
+	KMSKey         string `name:"kms-key" help:"Google KMS key resource ID." required:""`
 	ClientID       string `name:"client-id" help:"GitHub app client ID." required:""`
 	InstallationID string `name:"installation-id" help:"GitHub app installation ID." required:""`
 	Operation      string `arg:""`
@@ -23,25 +24,13 @@ func main() {
 		return
 	}
 
-	key, err := os.ReadFile(args.PrivateKey)
+	signer, err := gcpkms.NewSigner(context.Background(), args.KMSKey)
 
 	if err != nil {
-		k.Fatalf("could not read private key: %s\n", err)
+		k.Fatalf("%s\n", err)
 	}
 
-	block, _ := pem.Decode(key)
-
-	if block == nil {
-		k.Fatalf("failed to decode PEM block containing private key\n")
-	}
-
-	private, err := x509.ParsePKCS1PrivateKey(block.Bytes)
-
-	if err != nil {
-		k.Fatalf("could not parse private key: %s\n", err)
-	}
-
-	credhelper := internal.NewAppCredentialHelper(args.ClientID, args.InstallationID, private)
+	credhelper := internal.NewAppCredentialHelper(args.ClientID, args.InstallationID, signer)
 	attrs, err := internal.ReadCredentialAttributes(os.Stdin)
 
 	if err != nil {
