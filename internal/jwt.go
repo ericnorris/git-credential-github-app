@@ -50,7 +50,7 @@ func (s *payloadSigner) appendPayload(payload any) (string, error) {
 		return "", err
 	}
 
-	return jwtHeader + "." + base64.StdEncoding.EncodeToString(jsonPayload), nil
+	return jwtHeader + "." + base64.RawURLEncoding.EncodeToString(jsonPayload), nil
 }
 
 func (s *payloadSigner) appendSignature(hp string) (string, error) {
@@ -62,5 +62,5 @@ func (s *payloadSigner) appendSignature(hp string) (string, error) {
 		return "", err
 	}
 
-	return hp + "." + base64.StdEncoding.EncodeToString(signature), nil
+	return hp + "." + base64.RawURLEncoding.EncodeToString(signature), nil
 }
