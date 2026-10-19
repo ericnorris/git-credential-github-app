@@ -31,7 +31,7 @@ func (h *AppCredentialHelper) Get(in []CredentialAttribute) ([]CredentialAttribu
 	out := make([]CredentialAttribute, 0)
 
 	for _, a := range in {
-		if a.Key == "Host" && a.Value != "github.com" {
+		if a.Key == "host" && a.Value != "github.com" {
 			return out, nil
 		}
 	}
